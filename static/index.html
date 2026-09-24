@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Student AI Management System</title>
+<link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+<header>
+  <div><small>EWB AI & MACHINE LEARNING INTERNSHIP · FINAL PROJECT</small>
+  <h1>Student Database Application System</h1>
+  <p>FastAPI · SQLite · Gemini · LangGraph · ChromaDB</p></div>
+  <a href="/docs" target="_blank">Swagger ↗</a>
+</header>
+<main>
+<section class="stats">
+<div><span>Total Students</span><b id="total">0</b></div>
+<div><span>Average GPA</span><b id="avg">0.00</b></div>
+<div><span>Male</span><b id="male">0</b></div>
+<div><span>Female</span><b id="female">0</b></div>
+</section>
+<section class="layout">
+<div class="card">
+<h2>Student Records</h2><p class="muted">CRUD + search through FastAPI.</p>
+<form id="form" class="form">
+<input type="hidden" id="id">
+<input id="full_name" placeholder="Full name" required><input id="email" type="email" placeholder="Email" required>
+<input id="age" type="number" placeholder="Age" min="16" max="100" required>
+<select id="gender"><option>Male</option><option>Female</option><option>Other</option></select>
+<input id="course" placeholder="Course" required><input id="semester" type="number" placeholder="Semester" min="1" max="12" required>
+<input id="gpa" type="number" placeholder="GPA" min="0" max="10" step=".01" required><input id="city" placeholder="City">
+<button class="primary">Save Student</button><button type="button" id="clear">Clear</button>
+</form>
+<div class="search"><input id="search" placeholder="Search name, email or course"><button id="searchBtn">Search</button></div>
+<div class="table"><table><thead><tr><th>ID</th><th>Name</th><th>Course</th><th>Sem</th><th>GPA</th><th>Actions</th></tr></thead>
+<tbody id="rows"></tbody></table></div>
+</div>
+<aside class="card">
+<h2>AI Student Assistant</h2><p class="muted">LangGraph routes database and knowledge questions.</p>
+<div class="chips">
+<button>How many total students are there?</button>
+<button>What is the average GPA?</button>
+<button>Show the top 3 students by GPA.</button>
+<button>What is ChromaDB?</button>
+<button>What does CRUD mean?</button>
+</div>
+<textarea id="question" rows="4" placeholder="Ask about students or the project..."></textarea>
+<button class="primary wide" id="ask">Ask Gemini</button>
+<div id="answer" class="answer">Your answer will appear here.</div>
+</aside>
+</section>
+</main>
+<script src="/static/app.js"></script>
+</body></html>

@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: student-ai-management-system
+    runtime: python
+    healthCheckPath: /health
+    buildCommand: pip install -r requirements.txt && python seed.py && python seed_knowledge.py
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-3.8-flash
+      - key: PYTHON_VERSION
+        value: 3.12.8
+      - key: DATABASE_URL
+        value: sqlite:///./students.db
+      - key: CHROMA_PATH
+        value: ./chroma_db
+      - key: CHROMA_COLLECTION
+        value: student_knowledge
