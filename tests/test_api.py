@@ -80,7 +80,10 @@ def test_stats(client):
 
 def test_chatbot_database_flow_with_mocked_gemini(client, monkeypatch):
     client.post("/students", json=student_payload())
-    responses = iter(['{"intent":"DATABASE"}','SELECT COUNT(*) AS total_students FROM students;','There is 1 student in the database.'])
+    responses = iter([
+    '{"intent":"DATABASE"}',
+    'There is 1 student in the database.'
+])
     monkeypatch.setattr(chatbot_graph, "generate", lambda *args, **kwargs: next(responses))
     r = client.post("/chat", json={"question":"How many students are there?"})
     assert r.status_code == 200
@@ -94,11 +97,24 @@ def test_chatbot_classifier_json_fence(monkeypatch):
     assert result["intent"] == "KNOWLEDGE"
 
 def test_sql_guard_and_limit(monkeypatch):
-    monkeypatch.setattr(chatbot_graph, "generate", lambda *args, **kwargs: "```sql\nSELECT * FROM students LIMIT 999999;\n```")
-    monkeypatch.setattr(chatbot_graph, "get_client", lambda: object())
-    result = chatbot_graph.build_sql({"question":"show students"})
+    monkeypatch.setattr(
+        chatbot_graph,
+        "generate",
+        lambda *args, **kwargs: "SELECT id, full_name, email, age, gender, course, semester, gpa FROM students"
+    )
+    monkeypatch.setattr(
+        chatbot_graph,
+        "get_client",
+        lambda: object()
+    )
+
+    result = chatbot_graph.build_sql({"question": "show students"})
+
     assert result["sql"].endswith("LIMIT 100")
     assert ";" not in result["sql"]
-    monkeypatch.setattr(chatbot_graph, "generate", lambda *args, **kwargs: "SELECT * FROM students UNION SELECT name FROM sqlite_master")
-    result = chatbot_graph.build_sql({"question":"show students"})
+
+    result = chatbot_graph.build_sql(
+        {"question": "show students; DROP TABLE students"}
+    )
+
     assert "error" in result

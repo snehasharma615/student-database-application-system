@@ -80,7 +80,16 @@ def build_sql(state: ChatState):
     """Build a safe SQL query for common student database questions."""
     
     question = state["question"].lower().strip()
+# Safety guard: reject potentially destructive SQL requests
+    dangerous_terms = [
+        "drop", "delete", "update", "insert",
+        "alter", "create", "truncate", ";"
+    ]
 
+    if any(term in question for term in dangerous_terms):
+        return {
+            "error": "Unsafe SQL request detected."
+        }
     # Total number of students
     if "how many students" in question or "total students" in question:
         return {
